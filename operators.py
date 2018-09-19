@@ -1,6 +1,6 @@
 import numpy as np
 
-def swap(chromosome, heuristics, times=1):
+def swap(chromosome, times=1):
     clone = chromosome[:]
 
     for _ in range(times):
