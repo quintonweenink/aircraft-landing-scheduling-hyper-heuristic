@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def swap(chromosome, times=1):
     clone = chromosome[:]
 

@@ -1,96 +1,165 @@
 import numpy as np
 
-def firstFit(result, item, capacity, prev):
-    allocated = False
-    for i, bin in enumerate(result):
-        if bin + item <= capacity:
-            result[i] += item
-            allocated = True
-            break
 
-    if not allocated:
-        result.append(item)
+def shiftUp(solution):
+    newSolution = solution.clone()
+    sortedPlanes = [i[0] for i in sorted(enumerate(newSolution.landingSolution), key=lambda x: x[1].x, reverse=False)]
+    prev = None
+    for i in sortedPlanes:
+        if prev == None:
+            prev = newSolution.landingSolution[i]
+            continue
+        if prev.x + prev.s[newSolution.landingSolution[i].i] + 1 <= newSolution.landingSolution[i].x:
+            newSolution.landingSolution[i].x = prev.x + prev.s[newSolution.landingSolution[i].i] + 1
+            if newSolution.valid():
+                return newSolution
+            else:
+                newSolution = solution.clone()
+        else:
+            prev = newSolution.landingSolution[i]
 
-    return result, prev
-
-def lastFit(result, item, capacity, prev):
-    allocated = False
-    for i in range(len(result) - 1, -1, -1):
-        if result[i] + item <= capacity:
-            result[i] += item
-            allocated = True
-            break
-
-    if not allocated:
-        result.append(item)
-
-    return result, prev
-
-def randomFit(result, item, capacity, prev):
-    allocated = False
-    randomList = np.arange(len(result))
-    np.random.shuffle(randomList)
-    for i in randomList:
-        if result[i] + item <= capacity:
-            result[i] += item
-            allocated = True
-            break
-
-    if not allocated:
-        result.append(item)
-
-    return result, prev
-
-def nextFit(result, item, capacity, prev):
-    allocated = False
-
-    for i in range(prev, len(result)):
-        bin = result[i]
-        prev = i
-        if bin + item <= capacity:
-            result[i] += item
-            allocated = True
-
-    if not allocated:
-        result.append(item)
-        prev = 0
-
-    return result, prev
+    return solution
 
 
-def bestFit(result, item, capacity, prev):
-    best = float('inf')
-    pos = None
-    for i, bin in enumerate(result):
-        if bin + item <= capacity:
-            space = capacity - (bin + item)
-            if space < best:
-                best = space
-                pos = i
-                break
+def shiftUpReversed(solution):
+    newSolution = solution.clone()
+    sortedPlanes = [i[0] for i in sorted(enumerate(newSolution.landingSolution), key=lambda x: x[1].x, reverse=True)]
+    prev = None
+    for i in sortedPlanes:
+        if prev == None:
+            prev = newSolution.landingSolution[i]
+            continue
+        if prev.x + prev.s[newSolution.landingSolution[i].i] + 1 <= newSolution.landingSolution[i].x:
+            newSolution.landingSolution[i].x = prev.x + prev.s[newSolution.landingSolution[i].i] + 1
+            if newSolution.valid():
+                return newSolution
+            else:
+                newSolution = solution.clone()
+        else:
+            prev = newSolution.landingSolution[i]
 
-    if pos == None:
-        result.append(item)
-    else:
-        result[pos] += item
-
-    return result, prev
+    return solution
 
 
-def worstFit(result, item, capacity, prev):
-    worst = -1
-    pos = None
-    for i, bin in enumerate(result):
-        if bin + item <= capacity:
-            space = capacity - (bin + item)
-            if space > worst:
-                worst = space
-                pos = i
-                break
+def shiftDown(solution):
+    newSolution = solution.clone()
+    sortedPlanes = [i[0] for i in sorted(enumerate(newSolution.landingSolution), key=lambda x: x[1].x, reverse=False)]
+    prev = None
+    for i in sortedPlanes:
+        if prev == None:
+            prev = i
+            continue
+        if newSolution.landingSolution[prev].x + newSolution.landingSolution[prev].s[i] + 1 <= \
+                newSolution.landingSolution[i].x:
+            newSolution.landingSolution[prev].x = newSolution.landingSolution[prev].x + \
+                                                  newSolution.landingSolution[prev].s[i] + 1
+            if newSolution.valid():
+                return newSolution
+            else:
+                newSolution = solution.clone()
+        else:
+            prev = i
 
-    if pos == None:
-        result.append(item)
-    else:
-        result[pos] += item
+    return solution
 
-    return result, prev
+
+def shiftDownReversed(solution):
+    newSolution = solution.clone()
+    sortedPlanes = [i[0] for i in sorted(enumerate(newSolution.landingSolution), key=lambda x: x[1].x, reverse=True)]
+    prev = None
+    for i in sortedPlanes:
+        if prev == None:
+            prev = i
+            continue
+        if newSolution.landingSolution[prev].x + newSolution.landingSolution[prev].s[i] + 1 <= \
+                newSolution.landingSolution[i].x:
+            newSolution.landingSolution[prev].x = newSolution.landingSolution[prev].x + \
+                                                  newSolution.landingSolution[prev].s[i] + 1
+            if newSolution.valid():
+                return newSolution
+            else:
+                newSolution = solution.clone()
+        else:
+            prev = i
+
+    return solution
+
+
+def tryMoveHighestCloseToTarget(solution):
+    newSolution = solution.clone()
+    sortedPlanes = [i[0] for i in
+                    sorted(enumerate(newSolution.landingSolution), key=lambda x: x[1].getFitness(), reverse=True)]
+    for i in sortedPlanes:
+        newSolution.landingSolution[i].x = newSolution.landingSolution[i].t
+        if newSolution.valid():
+            return newSolution
+        else:
+            newSolution = solution.clone()
+    return solution
+
+
+def tryMoveHighestCloseToTargetReversed(solution):
+    newSolution = solution.clone()
+    sortedPlanes = [i[0] for i in
+                    sorted(enumerate(newSolution.landingSolution), key=lambda x: x[1].getFitness(), reverse=False)]
+    for i in sortedPlanes:
+        newSolution.landingSolution[i].x = newSolution.landingSolution[i].t
+        if newSolution.valid():
+            return newSolution
+        else:
+            newSolution = solution.clone()
+    return solution
+
+
+def trySwap(solution):
+    newSolution = solution.clone()
+    sortedPlanes = [i[0] for i in
+                    sorted(enumerate(newSolution.landingSolution), key=lambda x: x[1].getFitness(), reverse=True)]
+    for x in sortedPlanes:
+        for i in sortedPlanes:
+            if x == i:
+                continue
+            tempX = newSolution.landingSolution[i].x
+            newSolution.landingSolution[i].x = newSolution.landingSolution[x].x
+            newSolution.landingSolution[x].x = tempX
+            if newSolution.valid():
+                return newSolution
+            else:
+                newSolution = solution.clone()
+    return solution
+
+
+def trySwapReversed(solution):
+    newSolution = solution.clone()
+    sortedPlanes = [i[0] for i in
+                    sorted(enumerate(newSolution.landingSolution), key=lambda x: x[1].getFitness(), reverse=False)]
+    for x in sortedPlanes:
+        for i in sortedPlanes:
+            if x == i:
+                continue
+            tempX = newSolution.landingSolution[i].x
+            newSolution.landingSolution[i].x = newSolution.landingSolution[x].x
+            newSolution.landingSolution[x].x = tempX
+            if newSolution.valid():
+                return newSolution
+            else:
+                newSolution = solution.clone()
+    return solution
+
+
+def randomMove(solution):
+    newSolution = solution.clone()
+    sortedPlanes = [i[0] for i in
+                    sorted(enumerate(newSolution.landingSolution), key=lambda x: x[1].getFitness(), reverse=True)]
+    for x in sortedPlanes:
+        newSolution.landingSolution[x].x = np.random.randint(low=newSolution.landingSolution[x].e,
+                                                             high=newSolution.landingSolution[x].l + 1)
+        if newSolution.valid():
+            return newSolution
+        else:
+            newSolution = solution.clone()
+    return solution
+
+
+def doNothing(solution):
+    return solution
