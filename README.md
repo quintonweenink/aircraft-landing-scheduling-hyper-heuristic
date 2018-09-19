@@ -1,6 +1,11 @@
-### 1D bin-packing selection construction hyper-heuristics
+### Scheduling Aircraft Landings with a Selection Perturbative Hyper-Heuristic
 
-You can open the notebook online [here](https://github.com/quintonweenink/1d-bin-packing-selection-constructive-hyper-heuristics/blob/master/selection-constructive-hyper-heuristics.ipynb)
+#### Algorithms used:
+- Multi-point Genetic algorithm hyper-heuristic
+- Single-point Random search hyper-heuristic
+- Standard Genetic algorithm (not hyper-heuristic)
+
+You can open the notebook online [here](https://github.com/quintonweenink/aircraft-landing-scheduling-hyper-heuristic/blob/master/aircraft-landing-scheduling-hyper-heuristic.ipynb)
 
 #### Getting Started:
 
