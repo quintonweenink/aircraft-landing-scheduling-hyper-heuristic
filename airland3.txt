@@ -1,0 +1,12 @@
+\begin{tabular}{rlrrr}
+\toprule
+ problem &                             type &          mean &           std &      max \\
+\midrule
+     3.0 &          random accept all moves &  45847.333333 &   6945.592815 &  33880.0 \\
+         &           random improving moves &  38452.666667 &  12605.453564 &  22210.0 \\
+         &  random equal or improving moves &  32392.000000 &   5504.618909 &  22290.0 \\
+         &                     genetic alg  &  21955.333333 &   4046.571992 &  15120.0 \\
+         &     genetic alg hyper heuristic  &  19162.000000 &   7617.512455 &   5200.0 \\
+\bottomrule
+\end{tabular}
+
